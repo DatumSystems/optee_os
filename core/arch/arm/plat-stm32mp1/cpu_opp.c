@@ -324,21 +324,27 @@ stm32mp1_cpu_opp_init(const void *fdt, int node,
 	TEE_Result res = TEE_SUCCESS;
 	uint16_t cpu_voltage __maybe_unused = 0;
 
+	DMSG("!!! stm32mp1-cpu-opp: Enter stm32mp1_cpu_opp_init()");
+
 	res = get_cpu_parent(fdt);
 	if (res)
 		return res;
+	DMSG("!!! stm32mp1-cpu-opp:  get_cpu_parent()");
 
 #ifdef CFG_STM32MP15
 	res = regulator_get_voltage(cpu_opp.rdev, &cpu_voltage);
 	if (res)
 		return res;
+	DMSG("!!! stm32mp1-cpu-opp:  regulator_get_voltage()");
 
 	if (stm32mp1_clk_compute_all_pll1_settings(cpu_voltage))
 		panic();
+	DMSG("!!! stm32mp1-cpu-opp:  stm32mp1_clk_compute_all_pll1_settings()");
 #endif
 
 	res = stm32mp1_cpu_opp_get_dt_subnode(fdt, node);
 
+	DMSG("!!! stm32mp1-cpu-opp:  stm32mp1_cpu_opp_get_dt_subnode()");
 	return res;
 }
 

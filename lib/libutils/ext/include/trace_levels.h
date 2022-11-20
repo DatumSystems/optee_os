@@ -31,6 +31,6 @@
 #define TRACE_MAX       TRACE_FLOW
 
 /* Trace level of the casual printf */
-#define TRACE_PRINTF_LEVEL TRACE_ERROR
+#define TRACE_PRINTF_LEVEL TRACE_MAX
 
 #endif /*TRACE_LEVELS_H*/

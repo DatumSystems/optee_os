@@ -387,7 +387,7 @@ static TEE_Result probe_driver_node(const void *fdt,
 	default:
 		TAILQ_INSERT_HEAD(&dt_driver_failed_list, elt, link);
 
-		EMSG("Failed to probe %s on node %s: %#"PRIx32,
+		EMSG("Failed to probe !!DATUM!! %s on node %s: %#"PRIx32,
 		     drv_name, node_name, res);
 		break;
 	}

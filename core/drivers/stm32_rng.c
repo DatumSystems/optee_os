@@ -401,35 +401,54 @@ static TEE_Result stm32_rng_probe(const void *fdt, int offs,
 {
 	TEE_Result res = TEE_SUCCESS;
 
+	DMSG("RNG!!!! (1)");
+
 	/* Expect a single RNG instance */
 	assert(!stm32_rng.pdata.base.pa);
 
 	res = stm32_rng_get_platdata(&stm32_rng.pdata);
 	if (res)
+	{
+		DMSG("RNG!!!! (2)");
 		goto err;
+	}
 
 	res = stm32_rng_parse_fdt(fdt, offs, &stm32_rng);
 	if (res)
+	{
+		DMSG("RNG!!!! (3)");
 		goto err;
+	}
 
 	stm32_rng.ddata = (struct stm32_rng_driver_data *)compat_data;
 
 	res = clk_enable(stm32_rng.pdata.clock);
 	if (res)
+	{
+		DMSG("RNG!!!! (4)");
 		goto err;
+	}
 
 	res = stm32_reset_assert(stm32_rng.pdata.reset, RNG_TIMEOUT_US_1MS);
 	if (res)
+	{
+		DMSG("RNG!!!! (5)");
 		goto err;
+	}
 
 	res = stm32_reset_deassert(stm32_rng.pdata.reset, RNG_TIMEOUT_US_1MS);
 	if (res)
+	{
+		DMSG("RNG!!!! (6)");
 		goto err;
+	}
 
 	res = stm32_rng_init(&stm32_rng);
 	if (res)
+	{
+		DMSG("RNG!!!! (7)");
 		goto err;
-
+	}
 	clk_disable(stm32_rng.pdata.clock);
 
 #ifdef CFG_STM32MP15
@@ -441,6 +460,7 @@ static TEE_Result stm32_rng_probe(const void *fdt, int offs,
 	return TEE_SUCCESS;
 
 err:
+	DMSG("RNG!!!! (9)");
 	memset(&stm32_rng, 0, sizeof(stm32_rng));
 	return res;
 }

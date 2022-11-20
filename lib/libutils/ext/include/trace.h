@@ -17,6 +17,8 @@
 #ifndef TRACE_LEVEL
 #define TRACE_LEVEL TRACE_MAX
 #endif
+// #undef TRACE_LEVEL
+// #define TRACE_LEVEL TRACE_MAX
 
 /*
  * Symbols provided by the entity that uses this API.
