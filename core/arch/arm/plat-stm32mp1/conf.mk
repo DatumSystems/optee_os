@@ -18,7 +18,8 @@ flavorlist-512M = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157C_DK2) \
 		  $(flavor_dts_file-157D_DK1) \
 		  $(flavor_dts_file-157F_DK2) \
-		  $(flavor_dts_file-135F_DK)
+		  $(flavor_dts_file-135F_DK) \
+		  $(flavor_dts_file-153C_BRICK)
 
 flavorlist-1G = $(flavor_dts_file-157A_ED1) \
 		$(flavor_dts_file-157A_EV1) \
