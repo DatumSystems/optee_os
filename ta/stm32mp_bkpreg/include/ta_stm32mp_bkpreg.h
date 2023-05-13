@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: BSD-2-Clause */
 /*
- * Copyright (C) 2023, Datum Systems, Inc. - All Rights Reserved
+ * Copyright (c) 2021, STMicroelectronics
  */
 
-#ifndef __PTA_BKPREG_H
-#define __PTA_BKPREG_H
+#ifndef TA_STM32MP_BKPREG_H
+#define TA_STM32MP_BKPREG_H
 
-#define PTA_BKPREG_UUID { 0xa3eea217, 0xfa8d, 0x4541, \
-	{ 0x8d, 0xf6, 0x2c, 0x88, 0xae, 0x94, 0x99, 0x20 } }
+#define TA_STM32MP_BKPREG_UUID { 0xdeda93db, 0x8f6b, 0x4f62, \
+		{ 0x98, 0x98, 0x39, 0x22, 0xbb, 0xd8, 0x9f, 0xe8, } }
 
 /**
  * Read TAMP BKP registers
@@ -21,7 +21,7 @@
  * TEE_SUCCESS - Invoke command success
  * TEE_ERROR_BAD_PARAMETERS - Incorrect input param
  */
-#define PTA_BKPREG_READ_REG		0x0
+#define TA_STM32MP_BKPREG_READ		0x0
 
 /**
  * Write TAMP BKP registers
@@ -35,6 +35,6 @@
  * TEE_SUCCESS - Invoke command success
  * TEE_ERROR_BAD_PARAMETERS - Incorrect input param
  */
-#define PTA_BKPREG_WRITE_REG	0x1
+#define TA_STM32MP_BKPREG_WRITE		0x1
 
-#endif /* __PTA_BKPREG_H */
+#endif /* TA_STM32MP_BKPREG_H */

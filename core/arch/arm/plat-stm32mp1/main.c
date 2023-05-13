@@ -673,9 +673,9 @@ static TEE_Result stm32_configure_tamp(void)
 {
 	TEE_Result res __maybe_unused = TEE_SUCCESS;
 	struct stm32_bkpregs_conf bkpregs_conf = {
-		.nb_zone1_regs = 32, /* all 32 registers in zone 1 */
-		.nb_zone2_regs = 0   /* no registers in zone 2 */
-				     /* Zone3 all remaining (none) */
+		.nb_zone1_regs = 20,/* first 20 registers in zone 1 (Note 21st register used by ROM loader)*/
+		.nb_zone2_regs = 0 	/* no registers in zone 2 */
+							/* Zone3 all remaining (none) */
 	};
 
 	/* Enable BKP Register protection */
