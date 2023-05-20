@@ -95,6 +95,12 @@
 			slew-rate = <0>;
 		};
 	};
+	tamp_in2_pin_a: tamp_in2_pin_0 {
+		pins {
+			pinmux = <STM32_PINMUX('I', 8, RSVD)>;
+			st,tamp_id = <2>;
+		};
+	};
 	/* USER CODE END pinctrl */
 };
 
@@ -470,6 +476,14 @@
 	status = "okay";
 
 	/* USER CODE BEGIN tamp */
+	st,tamp_passive_precharge = <4>;
+	st,tamp_passive_nb_sample = <4>;
+	st,tamp_passive_sample_clk_div = <16384>;
+	tamp_passive@2 {
+		pinctrl-0 = <&tamp_in2_pin_a>;
+		st,trig_on;
+		status = "okay";
+	};
 	/* USER CODE END tamp */
 };
 
