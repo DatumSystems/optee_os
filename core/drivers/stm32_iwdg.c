@@ -108,6 +108,18 @@ static enum itr_return stm32_iwdg_it_handler(struct itr_handler *handler)
 }
 DECLARE_KEEP_PAGER(stm32_iwdg_it_handler);
 
+/*
+ * GIC support required in low power sequences and reset sequences
+ */
+#define GICC_EOIR			0x010
+
+void stm32mp_gic_set_end_of_interrupt(uint32_t it)
+{
+	vaddr_t gicc_base = get_gicc_base();
+
+	io_write32(gicc_base + GICC_EOIR, it);
+}
+
 void stm32_iwdg_refresh(void)
 {
 	struct stm32_iwdg_device *iwdg = NULL;

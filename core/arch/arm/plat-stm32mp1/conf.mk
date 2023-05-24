@@ -70,7 +70,8 @@ include core/arch/arm/cpu/cortex-a7.mk
 $(call force,CFG_ARM_GIC_PM,y)
 $(call force,CFG_GIC,y)
 $(call force,CFG_INIT_CNTVOFF,y)
-$(call force,CFG_PM,y)
+#$(call force,CFG_PM,y)
+$(call force,CFG_PM,n)
 $(call force,CFG_PM_ARM32,y)
 $(call force,CFG_PM_STUBS,y)
 $(call force,CFG_PSCI_ARM32,y)
@@ -354,4 +355,4 @@ ifeq ($(CFG_STM32_HUK),y)
 CFG_OTP_HW_TESTKEY ?= y
 endif
 
-CFG_TEE_CORE_LOG_LEVEL = 2
+CFG_TEE_CORE_LOG_LEVEL = 0
