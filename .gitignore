@@ -5,4 +5,5 @@ TAGS
 out
 .project
 *.swp
-build/
+build
+*.patch
