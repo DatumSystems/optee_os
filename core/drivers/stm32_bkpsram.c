@@ -22,14 +22,16 @@
 #include <types_ext.h>
 #include <util.h>
 
-TEE_Result stm32_read_bkpreg(uint32_t *value, uint32_t bkpreg_id)
+TEE_Result stm32_read_bkpsram_byte(uint8_t *value, vaddr_t offset)
 {
-	*value = io_read32(stm32mp_bkpreg(bkpreg_id));
+	vaddr_t bkpsram_addr = stm32mp_bkpsram_base() + offset;
+	*value = io_read8(bkpsram_addr);
 	return TEE_SUCCESS;
 }
 
-TEE_Result stm32_write_bkpreg(uint32_t value, uint32_t bkpreg_id)
+TEE_Result stm32_write_bkpreg(uint8_t value, vaddr_t offset)
 {
-	io_write32(stm32mp_bkpreg(bkpreg_id), value);
+	vaddr_t bkpsram_addr = stm32mp_bkpsram_base() + offset;
+	io_write8(bkpsram_addr, value);
 	return TEE_SUCCESS;
 }

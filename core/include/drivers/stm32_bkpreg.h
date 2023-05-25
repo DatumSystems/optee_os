@@ -24,8 +24,8 @@
 TEE_Result stm32_read_bkpreg(uint32_t *value, uint32_t bkpreg_id);
 
 /*
- * Read an BKP register data value
- * @value: Output read value
+ * Write an BKP register 
+ * @value: Value to write
  * @otp_id: BKP register number
  * Return a TEE_Result compliant return value
  */
