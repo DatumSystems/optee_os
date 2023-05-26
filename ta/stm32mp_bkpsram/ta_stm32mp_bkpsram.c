@@ -32,7 +32,7 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 	if (pt != exp_pt || !out || !out_size)
 		return TEE_ERROR_BAD_PARAMETERS;
 
-	/* Read BKP REG, convert from regesters to bytes */
+	/* Read BKPSRAM PTA */
 	params_pta[0].value.a = out_start;
 	params_pta[0].value.b = 0;
 	params_pta[1].memref.buffer = out;
@@ -59,7 +59,7 @@ static TEE_Result bkpsram_write(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 	if (pt != exp_pt || !in || !in_size)
 		return TEE_ERROR_BAD_PARAMETERS;
 
-	/* Write BKP REG, convert from registers to bytes */
+	/* Write BKPSRAM PTA */
 	params_pta[0].value.a = in_start;
 	params_pta[0].value.b = 0;
 	params_pta[1].memref.buffer = in;
@@ -84,7 +84,7 @@ TEE_Result TA_OpenSessionEntryPoint(uint32_t pt __unused,
 				    TEE_Param params[TEE_NUM_PARAMS] __unused,
 				    void **session __unused)
 {
-	static const TEE_UUID uuid = PTA_BKPREG_UUID;
+	static const TEE_UUID uuid = PTA_BKPSRAM_UUID;
 	TEE_Result res = TEE_ERROR_GENERIC;
 	TEE_PropSetHandle h = TEE_HANDLE_NULL;
 	TEE_Identity id = { };

@@ -25,7 +25,7 @@ For Mark's system:
 cd optee_os
 export PATH=/var/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin:$PATH
 export CROSS_COMPILE=arm-none-linux-gnueabihf-
-make PLATFORM=stm32mp1 CFG_EMBED_DTB_SOURCE_FILE=stm32mp153c-brick-mx.dts CFG_TEE_LOG_LEVEL=2 CFG_STM32MP15=y all
+make -j PLATFORM=stm32mp1 CFG_EMBED_DTB_SOURCE_FILE=stm32mp153c-brick-mx.dts CFG_TEE_LOG_LEVEL=2 CFG_STM32MP15=y all
 ```
 
 Another useful make target is the memory size required:

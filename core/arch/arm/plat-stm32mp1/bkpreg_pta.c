@@ -14,10 +14,9 @@
 #include <string.h>
 #include <util.h>
 
+#define PTA_NAME "bkpreg.pta"
 #define TA_STM32MP_BKPREG_UUID { 0xdeda93db, 0x8f6b, 0x4f62, \
 		{ 0x98, 0x98, 0x39, 0x22, 0xbb, 0xd8, 0x9f, 0xe8, } }
-
-#define PTA_NAME "bkpreg.pta"
 
 static TEE_Result bkpreg_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 {
@@ -124,5 +123,5 @@ static TEE_Result pta_bkpreg_open_session(uint32_t ptypes __unused,
 pseudo_ta_register(.uuid = PTA_BKPREG_UUID, .name = PTA_NAME,
 		   .flags = PTA_DEFAULT_FLAGS | TA_FLAG_CONCURRENT |
 			    TA_FLAG_DEVICE_ENUM,
-		   . open_session_entry_point = pta_bkpreg_open_session,
+		   .open_session_entry_point = pta_bkpreg_open_session,
 		   .invoke_command_entry_point = pta_bkpreg_invoke_command);

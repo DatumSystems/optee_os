@@ -6,8 +6,6 @@
 #ifndef TA_STM32MP_BKPSRAM_H
 #define TA_STM32MP_BKPSRAM_H
 
-// mcarlin@MARK-DATUM-PC-PRECISION-5820:~/dev/brick/br/github/datum/optee_os$ uuidgen
-// 61148ca7-ea00-4294-8971-560d6d981207
 #define TA_STM32MP_BKPSRAM_UUID { 0x61148ca7, 0xea00, 0x4294, \
 		{ 0x89, 0x71, 0x56, 0x0d, 0x6d, 0x98, 0x12, 0x07, } }
 

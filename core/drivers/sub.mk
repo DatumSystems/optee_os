@@ -28,6 +28,7 @@ srcs-$(CFG_AMLOGIC_UART) += amlogic_uart.c
 srcs-$(CFG_MVEBU_UART) += mvebu_uart.c
 srcs-$(CFG_STM32_BSEC) += stm32_bsec.c
 srcs-$(CFG_STM32_BKPREG) += stm32_bkpreg.c
+srcs-$(CFG_STM32_BKPSRAM) += stm32_bkpsram.c
 srcs-$(CFG_STM32_EXTI) += stm32_exti.c
 srcs-$(CFG_STM32_GPIO) += stm32_gpio.c
 srcs-$(CFG_STM32_HUK) += stm32_huk.c

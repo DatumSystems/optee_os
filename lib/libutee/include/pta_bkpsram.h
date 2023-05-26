@@ -5,9 +5,8 @@
 
 #ifndef __PTA_BKPSRAM_H
 #define __PTA_BKPSRAM_H
-// mcarlin@MARK-DATUM-PC-PRECISION-5820:~/dev/brick/br/github/datum/optee_os$ uuidgen
-// 4c3f4bb0-615d-48d9-81fc-363415f10440
-#define PTA_BKPREG_UUID { 0x4c3f4bb0, 0x615d, 0x48d9, \
+
+#define PTA_BKPSRAM_UUID { 0x4c3f4bb0, 0x615d, 0x48d9, \
 	{ 0x81, 0xfc, 0x36, 0x34, 0x15, 0xf1, 0x04, 0x40 } }
 
 /**

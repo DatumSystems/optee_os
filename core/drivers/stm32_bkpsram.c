@@ -5,7 +5,7 @@
 
 #include <assert.h>
 #include <config.h>
-#include <drivers/stm32_bkpreg.h>
+#include <drivers/stm32_bkpsram.h>
 #include <io.h>
 #include <kernel/delay.h>
 #include <kernel/dt.h>
@@ -29,7 +29,7 @@ TEE_Result stm32_read_bkpsram_byte(uint8_t *value, vaddr_t offset)
 	return TEE_SUCCESS;
 }
 
-TEE_Result stm32_write_bkpreg(uint8_t value, vaddr_t offset)
+TEE_Result stm32_write_bkpsram_byte(uint8_t value, vaddr_t offset)
 {
 	vaddr_t bkpsram_addr = stm32mp_bkpsram_base() + offset;
 	io_write8(bkpsram_addr, value);

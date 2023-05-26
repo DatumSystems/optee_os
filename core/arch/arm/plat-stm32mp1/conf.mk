@@ -232,10 +232,11 @@ CFG_STM32_REGULATOR_GPIO ?= y
 CFG_STM32_RNG ?= y
 CFG_STM32_RTC ?= y
 CFG_STM32_SAES ?= y
-# If TAMP enabled, enable BKPREG (part of TAMP)
+# If TAMP enabled, enable BKPREG (part of TAMP) amd BKPSRAM (used by TAM<P)
 CFG_STM32_TAMP ?= y
 ifeq ($(CFG_STM32_TAMP),y)
 $(call force,CFG_STM32_BKPREG,y,Mandated by CFG_STM32_TAMP)
+$(call force,CFG_STM32_BKPSRAM,y,Mandated by CFG_STM32_TAMP)
 endif
 CFG_STM32_TIM ?= y
 CFG_STM32_UART ?= y

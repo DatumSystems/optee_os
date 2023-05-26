@@ -7,6 +7,7 @@
 #define __STM32_BKPSRAM_H
 
 #include <compiler.h>
+#include <types_ext.h>
 #include <stdint.h>
 #include <tee_api.h>
 
@@ -24,6 +25,6 @@ TEE_Result stm32_read_bkpsram_byte(uint8_t *value, vaddr_t offset);
  * @otp_id: BKPSRAM address offset
  * Return a TEE_Result compliant return value
  */
-TEE_Result stm32_write_bkpreg(uint8_t value, vaddr_t offset);
+TEE_Result stm32_write_bkpsram_byte(uint8_t value, vaddr_t offset);
 
 #endif /*__STM32_BKPSRAM_H */

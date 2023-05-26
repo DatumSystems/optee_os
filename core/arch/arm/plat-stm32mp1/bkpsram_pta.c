@@ -14,12 +14,9 @@
 #include <string.h>
 #include <util.h>
 
-// mcarlin@MARK-DATUM-PC-PRECISION-5820:~/dev/brick/br/github/datum/optee_os$ uuidgen
-// 61148ca7-ea00-4294-8971-560d6d981207
+#define PTA_NAME "bkpsram.pta"
 #define TA_STM32MP_BKPSRAM_UUID { 0x61148ca7, 0xea00, 0x4294, \
 		{ 0x89, 0x71, 0x56, 0x0d, 0x6d, 0x98, 0x12, 0x07, } }
-
-#define PTA_NAME "bkpsram.pta"
 
 static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 {
@@ -76,7 +73,7 @@ static TEE_Result bkpsram_write(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 	return TEE_SUCCESS;
 }
 
-static TEE_Result pta_bkpreg_invoke_command(void *pSessionContext __unused,
+static TEE_Result pta_bkpsram_invoke_command(void *pSessionContext __unused,
 					  uint32_t cmd_id,
 					  uint32_t param_types,
 					  TEE_Param params[TEE_NUM_PARAMS])
@@ -86,7 +83,7 @@ static TEE_Result pta_bkpreg_invoke_command(void *pSessionContext __unused,
 	switch (cmd_id) {
 	case PTA_BKPSRAM_READ:
 		return bkpsram_read(param_types, params);
-	case PTA_BKPREG_WRITE:
+	case PTA_BKPSRAM_WRITE:
 		return bkpsram_write(param_types, params);
 	default:
 		break;
@@ -95,7 +92,7 @@ static TEE_Result pta_bkpreg_invoke_command(void *pSessionContext __unused,
 	return TEE_ERROR_NOT_IMPLEMENTED;
 }
 
-static TEE_Result pta_bkpreg_open_session(uint32_t ptypes __unused,
+static TEE_Result pta_bkpsram_open_session(uint32_t ptypes __unused,
 					TEE_Param par[TEE_NUM_PARAMS] __unused,
 					void **session __unused)
 {
@@ -120,8 +117,8 @@ static TEE_Result pta_bkpreg_open_session(uint32_t ptypes __unused,
 	return TEE_ERROR_ACCESS_DENIED;
 }
 
-pseudo_ta_register(.uuid = PTA_BKPREG_UUID, .name = PTA_NAME,
+pseudo_ta_register(.uuid = PTA_BKPSRAM_UUID, .name = PTA_NAME,
 		   .flags = PTA_DEFAULT_FLAGS | TA_FLAG_CONCURRENT |
 			    TA_FLAG_DEVICE_ENUM,
-		   . open_session_entry_point = pta_bkpreg_open_session,
-		   .invoke_command_entry_point = pta_bkpreg_invoke_command);
+		   .open_session_entry_point = pta_bkpsram_open_session,
+		   .invoke_command_entry_point = pta_bkpsram_invoke_command);
