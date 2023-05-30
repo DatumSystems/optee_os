@@ -25,8 +25,8 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE);
 
-	uint32_t *buf = (uint32_t *)params[1].memref.buffer;
-	uint32_t start = 0;
+	uint8_t *buf = (uint8_t *)params[1].memref.buffer;
+	uint32_t start = params[0].value.a;
 	uint32_t addr = 0;
 	size_t size = params[1].memref.size;
 
@@ -34,10 +34,8 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 		return TEE_ERROR_BAD_PARAMETERS;
 
 	/* check block size does not overflow BKPSRAM */
-	if( (BKPSRAM_BASE + BKPSRAM_SIZE) > params[0].value.a || (BKPSRAM_BASE + BKPSRAM_SIZE) > (params[0].value.a + size))
+	if((start + size) > BKPSRAM_SIZE)
 		return TEE_ERROR_BAD_PARAMETERS;
-
-	start = params[0].value.a;
 
 	for(addr = start; addr < start + size; addr++, buf++)
 		stm32_read_bkpsram_byte(buf, addr);
@@ -52,9 +50,8 @@ static TEE_Result bkpsram_write(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE);
 
-	uint32_t *buf = (uint32_t *)params[1].memref.buffer;
-	uint32_t start = 0;
-	size_t length = 0;
+	uint8_t *buf = (uint8_t *)params[1].memref.buffer;
+	uint32_t start = params[0].value.a;
 	uint32_t addr = 0;
 	size_t size = params[1].memref.size;
 
@@ -62,11 +59,8 @@ static TEE_Result bkpsram_write(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 		return TEE_ERROR_BAD_PARAMETERS;
 
 	/* check block size does not overflow BKPSRAM */
-	if( (BKPSRAM_BASE + BKPSRAM_SIZE) > params[0].value.a || (BKPSRAM_BASE + BKPSRAM_SIZE) > (params[0].value.a + size))
+	if((start + size) > BKPSRAM_SIZE)
 		return TEE_ERROR_BAD_PARAMETERS;
-
-	start = params[0].value.a;
-
 
 	for(addr = start; addr < start + size; addr++, buf++)
 		stm32_write_bkpsram_byte(*buf, addr);

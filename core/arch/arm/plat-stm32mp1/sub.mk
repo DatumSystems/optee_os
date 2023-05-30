@@ -5,6 +5,7 @@ srcs-y += reset.S
 srcs-$(CFG_WITH_SOFTWARE_PRNG) += rng_seed.c
 srcs-$(CFG_BSEC_PTA) += bsec_pta.c
 srcs-$(CFG_BKPREG_PTA) += bkpreg_pta.c
+srcs-$(CFG_BKPSRAM_PTA) += bkpsram_pta.c
 srcs-$(CFG_DISPLAY) += display.c
 srcs-$(CFG_SCMI_MSG_DRIVERS) += scmi_server.c
 srcs-y += shared_resources.c

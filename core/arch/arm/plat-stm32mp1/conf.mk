@@ -205,11 +205,14 @@ ifeq ($(CFG_BSEC_PTA),y)
 $(call force,CFG_STM32_BSEC,y,Mandated by CFG_BSEC_PTA)
 endif
 
-# Enable TAMP BKP REG for sucure key memory
+# Enable TAMP BKP REG for secure key storage
 CFG_BKPREG_PTA ?= y
 ifeq ($(CFG_BKPREG_PTA),y)
 $(call force,CFG_STM32_TAMP,y,Mandated by CFG_BKPREG_PTA)
 endif
+
+#Enable BKP SRAM for secure key storage
+CFG_BKPSRAM_PTA ?= y
 
 # Remoteproc early TA for coprocessor firmware management
 CFG_RPROC_PTA ?= n
