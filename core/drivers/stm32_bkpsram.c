@@ -5,7 +5,9 @@
 
 #include <assert.h>
 #include <config.h>
+#include <drivers/stm32mp_dt_bindings.h>
 #include <drivers/stm32_bkpsram.h>
+#include <drivers/stm32mp1_pwr.h>
 #include <io.h>
 #include <kernel/delay.h>
 #include <kernel/dt.h>
@@ -35,3 +37,17 @@ TEE_Result stm32_write_bkpsram_byte(uint8_t value, vaddr_t offset)
 	io_write8(bkpsram_addr, value);
 	return TEE_SUCCESS;
 }
+
+static TEE_Result init_bkpsram(void)
+{
+	struct clk *bksram_clk = stm32mp_rcc_clock_id_to_clk(BKPSRAM);
+	if(!bksram_clk)
+		panic();
+
+	/* Keep backup RAM content in standby */
+	io_setbits32(stm32_pwr_base() + PWR_CR2_OFF, PWR_CR2_BREN);
+
+	clk_enable(bksram_clk);
+	return TEE_SUCCESS;
+}
+driver_init(init_bkpsram);
