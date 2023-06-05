@@ -67,8 +67,10 @@ endif
 
 include core/arch/arm/cpu/cortex-a7.mk
 
-$(call force,CFG_ARM_GIC_PM,y)
+#$(call force,CFG_ARM_GIC_PM,y)
+$(call force,CFG_ARM_GIC_PM,n)
 $(call force,CFG_GIC,y)
+$(call force,CFG_ARM_GICV3,n)
 $(call force,CFG_INIT_CNTVOFF,y)
 #$(call force,CFG_PM,y)
 $(call force,CFG_PM,n)

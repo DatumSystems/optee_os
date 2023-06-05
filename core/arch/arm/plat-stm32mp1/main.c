@@ -665,7 +665,7 @@ static uint32_t __unused stm32mp1_etamper_action(int id __maybe_unused)
 {
 	MSG("External tamper %u occurs", id - EXT_TAMP1 + 1);
 
-	return TAMP_CB_ACK_AND_RESET;
+	return TAMP_CB_ACK;
 }
 DECLARE_KEEP_PAGER(stm32mp1_etamper_action);
 
