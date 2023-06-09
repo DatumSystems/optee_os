@@ -14,9 +14,6 @@
 #include <tee_internal_api_extensions.h>
 #include <util.h>
 
-#define NUM_KEYS 				(17)
-#define KEY_SIZE				(32)
-#define CRC32_SIZE				(4)
 #define KEY_STORE_OFFSET_A		(0)
 #define KEY_STORE_OFFSET_B		KEY_STORE_OFFSET_A + NUM_KEYS * KEY_SIZE + CRC32_SIZE
 
@@ -90,6 +87,11 @@ static TEE_Result bkpsram_zeroize_keys(uint32_t pt)
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE);
+	const uint32_t pta   =  TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+							TEE_PARAM_TYPE_MEMREF_INPUT,
+							TEE_PARAM_TYPE_NONE,
+							TEE_PARAM_TYPE_NONE);
+
 	TEE_Result res = TEE_SUCCESS;
 	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
 	uint8_t keystore[NUM_KEYS * KEY_SIZE + CRC32_SIZE] = {0};
@@ -98,51 +100,51 @@ static TEE_Result bkpsram_zeroize_keys(uint32_t pt)
 	if (pt != exp_pt)
 		return TEE_ERROR_BAD_PARAMETERS;
 	crc = Crc32(keystore, NUM_KEYS * KEY_SIZE);
+	/* Write BKPSRAM PTA */
 	memcpy(&keystore[NUM_KEYS * KEY_SIZE], &crc, CRC32_SIZE);
 	params_pta[0].value.a = KEY_STORE_OFFSET_A;
 	params_pta[1].memref.buffer = keystore;
 	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
-	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
+	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
 	params_pta[0].value.a = KEY_STORE_OFFSET_B;
 	params_pta[1].memref.buffer = keystore;
 	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
-	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
+	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
 	return res;
 }
 
-static bool bkpsram_check_keystore(uint32_t pt)
+static bool bkpsram_check_keystore(void)
 {
-	const uint32_t exp_pt = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
-							TEE_PARAM_TYPE_MEMREF_OUTPUT,
-							TEE_PARAM_TYPE_NONE,
-							TEE_PARAM_TYPE_NONE);
+	uint32_t pta;
 	TEE_Result res = TEE_SUCCESS;
 	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
 	uint8_t keystore_a[NUM_KEYS * KEY_SIZE + CRC32_SIZE];
 	uint8_t keystore_b[NUM_KEYS * KEY_SIZE + CRC32_SIZE];
 	uint32_t crc32a_stor, crc32a_calc, crc32b_stor, crc32b_calc;
 
-	if (pt != exp_pt)
-		return TEE_ERROR_BAD_PARAMETERS;
 	/* Read BKPSRAM PTA */
+	pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+		  TEE_PARAM_TYPE_MEMREF_OUTPUT,
+		  TEE_PARAM_TYPE_NONE,
+		  TEE_PARAM_TYPE_NONE);
 	params_pta[0].value.a = KEY_STORE_OFFSET_A;
-	params_pta[0].value.b = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
 	params_pta[1].memref.buffer = keystore_a;
-	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pt, params_pta, NULL);
+	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
+	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pta, params_pta, NULL);
 	if(res != TEE_SUCCESS)
 		return true;
 	/* Read BKPSRAM PTA */
 	params_pta[0].value.a = KEY_STORE_OFFSET_B;
-	params_pta[0].value.b = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
 	params_pta[1].memref.buffer = keystore_b;
-	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pt, params_pta, NULL);
+	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
+	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pta, params_pta, NULL);
 	if(res != TEE_SUCCESS)
 		return true;
 
 	memcpy(&crc32a_stor, &keystore_a[NUM_KEYS * KEY_SIZE], CRC32_SIZE);
 	memcpy(&crc32b_stor, &keystore_b[NUM_KEYS * KEY_SIZE], CRC32_SIZE);
 	crc32a_calc = Crc32(keystore_a, NUM_KEYS * KEY_SIZE);
-	crc32b_calc = Crc32(keystore_a, NUM_KEYS * KEY_SIZE);
+	crc32b_calc = Crc32(keystore_b, NUM_KEYS * KEY_SIZE);
 
 
 	if(crc32a_stor == crc32a_calc)
@@ -150,10 +152,15 @@ static bool bkpsram_check_keystore(uint32_t pt)
 		if(crc32b_stor != crc32b_calc)
 		{
 			// a is good, b is bad, write a over b
+			/* Write BKPSRAM PTA */
+			pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+				TEE_PARAM_TYPE_MEMREF_INPUT,
+				TEE_PARAM_TYPE_NONE,
+				TEE_PARAM_TYPE_NONE);
 			params_pta[0].value.a = KEY_STORE_OFFSET_B;
 			params_pta[1].memref.buffer = keystore_a;
 			params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
-			res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
+			res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
 		}
 		return false;
 	}
@@ -162,49 +169,66 @@ static bool bkpsram_check_keystore(uint32_t pt)
 		if(crc32a_stor != crc32a_calc)
 		{
 			// b is good, a is bad, write b over a
+			/* Write BKPSRAM PTA */
+			pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+				  TEE_PARAM_TYPE_MEMREF_INPUT,
+				  TEE_PARAM_TYPE_NONE,
+				  TEE_PARAM_TYPE_NONE);
 			params_pta[0].value.a = KEY_STORE_OFFSET_A;
 			params_pta[1].memref.buffer = keystore_b;
 			params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
-			res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
+			res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
 		}
 		return false;
 	}
 	else 
 	{
-		// a and b are bad, zeroize
-		bkpsram_zeroize_keys(pt);
+		// a and b are bad
+		/* Zeroize Key BKPSRAM PTA */
+		pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_NONE,
+			  TEE_PARAM_TYPE_NONE,
+			  TEE_PARAM_TYPE_NONE,
+			  TEE_PARAM_TYPE_NONE);
+		bkpsram_zeroize_keys(pta);
 		return true;
 	}
 }
 
-static TEE_Result update_crc32(uint32_t pt, uint32_t offset)
+static TEE_Result bkpsram_update_crc32(uint32_t offset)
 {
-	const uint32_t exp_pt = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
-							TEE_PARAM_TYPE_MEMREF_OUTPUT,
-							TEE_PARAM_TYPE_NONE,
-							TEE_PARAM_TYPE_NONE);
+	uint32_t pta;
 	TEE_Result res = TEE_SUCCESS;
 	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
 	uint8_t keystore[NUM_KEYS * KEY_SIZE];
 	uint32_t crc32;
 
-	if (pt != exp_pt)
-		return TEE_ERROR_BAD_PARAMETERS;
 	/* Read BKPSRAM PTA */
+ 	pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+		TEE_PARAM_TYPE_MEMREF_OUTPUT,
+		TEE_PARAM_TYPE_NONE,
+		TEE_PARAM_TYPE_NONE);
 	params_pta[0].value.a = offset;
 	params_pta[0].value.b = 0;
 	params_pta[1].memref.buffer = keystore;
 	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE;
-	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pt, params_pta, NULL);
+	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pta, params_pta, NULL);
 	if(res == TEE_SUCCESS)
 	{
+		/* Write BKPSRAM PTA */
+		pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+			  TEE_PARAM_TYPE_MEMREF_INPUT,
+			  TEE_PARAM_TYPE_NONE,
+			  TEE_PARAM_TYPE_NONE);
 		crc32 = Crc32(keystore, NUM_KEYS * KEY_SIZE);
-		params_pta[1].memref.buffer = (uint8_t *)(crc32);
+		params_pta[0].value.a = NUM_KEYS * KEY_SIZE;
+		params_pta[0].value.b = 0;
+		params_pta[1].memref.buffer = (uint8_t *)(&crc32);
 		params_pta[1].memref.size =  CRC32_SIZE;
-		res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
+		res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
 	}
 	return res;
 }
+
 static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 {
 	const uint32_t exp_pt = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
@@ -263,14 +287,13 @@ static TEE_Result bkpsram_readkey(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 	uint8_t *out;
 	uint32_t index;
 
-	if(bkpsram_check_keystore(pt))
+	if(bkpsram_check_keystore())
 	{
-		params_pta[1].memref.size = 0;
-		res = TEE_SUCCESS;
+		res = TEE_ERROR_BAD_STATE;
 	}
 	else
 	{
-		out = (uint8_t *)(&params[1].memref.buffer);
+		out = (uint8_t *)params[1].memref.buffer;
 		index = params[0].value.a;
 
 		if (pt != exp_pt || !out || index > (NUM_KEYS - 1))
@@ -278,9 +301,9 @@ static TEE_Result bkpsram_readkey(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 
 		/* Read BKPSRAM PTA */
 		params_pta[0].value.a = KEY_STORE_OFFSET_A + index * KEY_SIZE;
-		params_pta[0].value.b = KEY_SIZE;
+		params_pta[0].value.b = 0;
 		params_pta[1].memref.buffer = out;
-
+		params_pta[1].memref.size = KEY_SIZE;
 		res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pt, params_pta, NULL);
 	}
 	return res;
@@ -297,7 +320,6 @@ static TEE_Result bkpsram_writekey(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS]
 	size_t in_size = params[1].memref.size;
 	uint32_t *in = (uint32_t *)params[1].memref.buffer;
 	uint32_t index = params[0].value.a;
-
 	if (pt != exp_pt || !in || in_size != KEY_SIZE || index > (NUM_KEYS - 1))
 		return TEE_ERROR_BAD_PARAMETERS;
 
@@ -306,16 +328,15 @@ static TEE_Result bkpsram_writekey(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS]
 	params_pta[0].value.b = 0;
 	params_pta[1].memref.buffer = in;
 	params_pta[1].memref.size = KEY_SIZE;
-
 	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
 
 	params_pta[0].value.a = KEY_STORE_OFFSET_B + index * KEY_SIZE;
 	if(res == TEE_SUCCESS)
 		res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pt, params_pta, NULL);
 	if(res == TEE_SUCCESS)
-		res = update_crc32(pt, KEY_STORE_OFFSET_A);
+		res = bkpsram_update_crc32(KEY_STORE_OFFSET_A);
 	if(res == TEE_SUCCESS)
-		res = update_crc32(pt, KEY_STORE_OFFSET_B);
+		res = bkpsram_update_crc32(KEY_STORE_OFFSET_B);
 	return res;
 }
 

@@ -9,6 +9,10 @@
 #define TA_STM32MP_BKPSRAM_UUID { 0x61148ca7, 0xea00, 0x4294, \
 		{ 0x89, 0x71, 0x56, 0x0d, 0x6d, 0x98, 0x12, 0x07, } }
 
+#define NUM_KEYS 				(17)
+#define KEY_SIZE				(32)
+#define CRC32_SIZE				(4)
+
 /**
  * Read TAMP BKP registers
  *
