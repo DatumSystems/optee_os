@@ -14,6 +14,7 @@
 #include <string.h>
 #include <util.h>
 
+#include <stdio.h>
 #define PTA_NAME "bkpsram.pta"
 #define TA_STM32MP_BKPSRAM_UUID { 0x61148ca7, 0xea00, 0x4294, \
 		{ 0x89, 0x71, 0x56, 0x0d, 0x6d, 0x98, 0x12, 0x07, } }
@@ -24,10 +25,9 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_MEMREF_OUTPUT,
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE);
-
 	uint8_t *buf = (uint8_t *)params[1].memref.buffer;
+	size_t size = params[1].memref.size;
 	uint32_t start = params[0].value.a;
-	size_t size = params[0].value.b;
 	uint32_t offset = 0;
 
 	if (pt != exp_pt || !buf || !size)
@@ -36,8 +36,6 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 	/* check block size does not overflow BKPSRAM */
 	if((start + size) > BKPSRAM_SIZE)
 		return TEE_ERROR_BAD_PARAMETERS;
-
-	params[1].memref.size = size;
 
 	for(offset = start; offset < start + size; offset++, buf++)
 		stm32_read_bkpsram_byte(buf, offset);
@@ -53,9 +51,9 @@ static TEE_Result bkpsram_write(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_NONE);
 
 	uint8_t *buf = (uint8_t *)params[1].memref.buffer;
+	size_t size = params[1].memref.size;
 	uint32_t start = params[0].value.a;
 	uint32_t offset = 0;
-	size_t size = params[1].memref.size;
 
 	if (pt != exp_pt || !buf || !size)
 		return TEE_ERROR_BAD_PARAMETERS;
@@ -66,6 +64,7 @@ static TEE_Result bkpsram_write(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 
 	for(offset = start; offset < start + size; offset++, buf++)
 		stm32_write_bkpsram_byte(*buf, offset);
+
 	return TEE_SUCCESS;
 }
 

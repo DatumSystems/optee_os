@@ -24,8 +24,8 @@ static TEE_Result bkpreg_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE);
 	uint32_t *out = (uint32_t *)params[1].memref.buffer;
-	uint32_t out_start = params[0].value.a;
 	size_t out_size = params[1].memref.size;
+	uint32_t out_start = params[0].value.a;
 	TEE_Result res = TEE_SUCCESS;
 	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
 

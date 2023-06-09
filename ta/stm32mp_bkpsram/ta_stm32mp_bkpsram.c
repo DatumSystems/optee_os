@@ -192,8 +192,9 @@ static TEE_Result update_crc32(uint32_t pt, uint32_t offset)
 		return TEE_ERROR_BAD_PARAMETERS;
 	/* Read BKPSRAM PTA */
 	params_pta[0].value.a = offset;
-	params_pta[0].value.b = NUM_KEYS * KEY_SIZE;
+	params_pta[0].value.b = 0;
 	params_pta[1].memref.buffer = keystore;
+	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE;
 	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pt, params_pta, NULL);
 	if(res == TEE_SUCCESS)
 	{
@@ -211,8 +212,8 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_NONE,
 							TEE_PARAM_TYPE_NONE);
 	uint8_t *out = (uint8_t *)params[1].memref.buffer;
-	uint32_t out_start = params[0].value.a;
 	size_t out_size = params[1].memref.size;
+	uint32_t out_start = params[0].value.a;
 	TEE_Result res = TEE_SUCCESS;
 	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
 
@@ -221,8 +222,8 @@ static TEE_Result bkpsram_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 
 	/* Read BKPSRAM PTA */
 	params_pta[0].value.a = out_start;
-	params_pta[0].value.b = out_size;
 	params_pta[1].memref.buffer = out;
+	params_pta[1].memref.size = out_size;
 
 	res = TEE_InvokeTACommand(pta_session, TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_READ, pt, params_pta, NULL);
 	return res;

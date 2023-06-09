@@ -43,8 +43,7 @@
  * [in]		value[0].a			Key index (0 to 16)
  * [in]		value[0].b			Unused
  * [out]	memref[1].buffer	Output buffer to store key (256b = 32B)
- * [out]	memref[1].size		Number of bytes in key (32).  If zero then TAMP or error
- *								  and all keys zeroized.
+ * [out]	memref[1].size		Number of bytes in key (32).
  * Return codes:
  * TEE_SUCCESS - Invoke command success
  * TEE_ERROR_BAD_PARAMETERS - Incorrect input param

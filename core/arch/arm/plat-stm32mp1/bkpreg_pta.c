@@ -26,10 +26,10 @@ static TEE_Result bkpreg_read(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
 							TEE_PARAM_TYPE_NONE);
 
 	uint32_t *buf = (uint32_t *)params[1].memref.buffer;
+	size_t size = params[1].memref.size;
 	uint32_t bkpreg_start = 0;
 	size_t bkpreg_length = 0;
 	uint32_t bkpreg_id = 0;
-	size_t size = params[1].memref.size;
 
 	if (pt != exp_pt || !buf || !size)
 		return TEE_ERROR_BAD_PARAMETERS;

@@ -13,9 +13,9 @@
  * Read BKPSRAM memory
  *
  * [in]		value[0].a			BKPSRAM read offset in bytes
- * [in]		value[0].b			BKPSRAM number of bytes to read
+ * [in]		value[0].b			Unused
  * [out]	memref[1].buffer	Output buffer to store read byte values
- * [out]	memref[1].size		BKPSRAM number of bytes read
+ * [out]	memref[1].size		BKPSRAM number of bytes to read
  *
  * Return codes:
  * TEE_SUCCESS - Invoke command success

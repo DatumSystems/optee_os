@@ -12,10 +12,10 @@
 /**
  * Read TAMP BKP registers
  *
- * [in]		value[0].a			BKP REG start offset in byte
+ * [in]		value[0].a			BKP REG start register offset (0 to 19)
  * [in]		value[0].b			Not used
  * [out]	memref[1].buffer	Output buffer to store read byte values
- * [out]	memref[1].size		Bumber of bytes to be read (4 byte steps)
+ * [out]	memref[1].size		Number of registers to read
  *
  * Return codes:
  * TEE_SUCCESS - Invoke command success
@@ -26,10 +26,10 @@
 /**
  * Write TAMP BKP registers
  *
- * [in]		value[0].a			BKP REG offset in byte
+ * [in]		value[0].a			BKP REG start register offset (0 to 19)
  * [in]		value[0].b			Not used
- * [in]		memref[1].buffer	Input buffer to read values
- * [in]		memref[1].size		Number of bytes to be written (4 byte steps)
+ * [in]		memref[1].buffer	Input buffer to read byte values
+ * [in]		memref[1].size		Number of registers to write
  *
  * Return codes:
  * TEE_SUCCESS - Invoke command success
