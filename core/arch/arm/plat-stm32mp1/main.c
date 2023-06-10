@@ -673,9 +673,9 @@ static TEE_Result stm32_configure_tamp(void)
 {
 	TEE_Result res __maybe_unused = TEE_SUCCESS;
 	struct stm32_bkpregs_conf bkpregs_conf = {
-		.nb_zone1_regs = 10, /* 10 registers in zone 1 */
-		.nb_zone2_regs = 5   /* 5 registers in zone 2 */
-				     /* Zone3 all remaining */
+		.nb_zone1_regs = 20,/* first 20 registers in zone 1 (Note 21st register used by ROM loader)*/
+		.nb_zone2_regs = 0 	/* no registers in zone 2 */
+							/* Zone3 all remaining (none) */
 	};
 
 	/* Enable BKP Register protection */
@@ -705,7 +705,7 @@ static TEE_Result stm32_configure_tamp(void)
 				 stm32mp1_itamper_action);
 #endif
 
-#ifdef CFG_STM32MP13
+//#ifdef CFG_STM32MP13
 	/*
 	 * EXT_TAMPx needs to exist but also to be activated in DT. Here, we
 	 * check if the EXT_TAMP2 is defined in DT.
@@ -716,7 +716,7 @@ static TEE_Result stm32_configure_tamp(void)
 		DMSG("no EXT_TAMP2 on this platform");
 	else if (res == TEE_ERROR_ITEM_NOT_FOUND)
 		DMSG("EXT_TAMP2 in pin was not found in device tree");
-#endif
+//#endif
 
 	if (stm32_tamp_set_config())
 		panic();

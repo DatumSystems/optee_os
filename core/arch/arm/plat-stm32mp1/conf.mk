@@ -70,7 +70,8 @@ include core/arch/arm/cpu/cortex-a7.mk
 $(call force,CFG_ARM_GIC_PM,y)
 $(call force,CFG_GIC,y)
 $(call force,CFG_INIT_CNTVOFF,y)
-$(call force,CFG_PM,y)
+#$(call force,CFG_PM,y)
+$(call force,CFG_PM,n)
 $(call force,CFG_PM_ARM32,y)
 $(call force,CFG_PM_STUBS,y)
 $(call force,CFG_PSCI_ARM32,y)
@@ -204,6 +205,15 @@ ifeq ($(CFG_BSEC_PTA),y)
 $(call force,CFG_STM32_BSEC,y,Mandated by CFG_BSEC_PTA)
 endif
 
+# Enable TAMP BKP REG for secure key storage
+CFG_BKPREG_PTA ?= y
+ifeq ($(CFG_BKPREG_PTA),y)
+$(call force,CFG_STM32_TAMP,y,Mandated by CFG_BKPREG_PTA)
+endif
+
+#Enable BKP SRAM for secure key storage
+CFG_BKPSRAM_PTA ?= y
+
 # Remoteproc early TA for coprocessor firmware management
 CFG_RPROC_PTA ?= n
 ifeq ($(CFG_RPROC_PTA),y)
@@ -225,7 +235,12 @@ CFG_STM32_REGULATOR_GPIO ?= y
 CFG_STM32_RNG ?= y
 CFG_STM32_RTC ?= y
 CFG_STM32_SAES ?= y
+# If TAMP enabled, enable BKPREG (part of TAMP) amd BKPSRAM (used by TAM<P)
 CFG_STM32_TAMP ?= y
+ifeq ($(CFG_STM32_TAMP),y)
+$(call force,CFG_STM32_BKPREG,y,Mandated by CFG_STM32_TAMP)
+$(call force,CFG_STM32_BKPSRAM,y,Mandated by CFG_STM32_TAMP)
+endif
 CFG_STM32_TIM ?= y
 CFG_STM32_UART ?= y
 CFG_STM32_VREFBUF ?= y
@@ -343,3 +358,5 @@ CFG_STM32MP15x_STM32IMAGE ?= n
 ifeq ($(CFG_STM32_HUK),y)
 CFG_OTP_HW_TESTKEY ?= y
 endif
+
+CFG_TEE_CORE_LOG_LEVEL = 0
