@@ -14,7 +14,7 @@
 #define CRC32_SIZE				(4)
 
 /**
- * Read TAMP BKP registers
+ * Read BKPSRAM bytes
  *
  * [in]		value[0].a			BKPSRAM start address offset
  * [in]		value[0].b			BKPSRAM number of bytes to read
@@ -28,7 +28,7 @@
 #define TA_STM32MP_BKPSRAM_READ			0x915B629D
 
 /**
- * Write TAMP BKP registers
+ * Write BKPSRAM bytes
  *
  * [in]		value[0].a			BKPSRAM start address offset
  * [in]		value[0].b			Not used
@@ -70,9 +70,10 @@
 #define TA_STM32MP_BKPSRAM_WRITEKEY		0x7FC2C80B
 
 /* 
- * Zeroize Entire Keystore
+ * Zeroize Keystore
  *
- * [no parameters]
+ * [in]		value[0].a			Bitmask '1' indicates erase (e.g 0x00000003 - erase keys 0 and 1)
+ * [in]		value[0].b			Unused
  * 
  * Return codes:
  * TEE_SUCCESS - Invoke command success

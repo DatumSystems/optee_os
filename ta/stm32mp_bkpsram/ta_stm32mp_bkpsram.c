@@ -20,6 +20,8 @@
 static size_t session_refcount;
 static TEE_TASessionHandle pta_session = TEE_HANDLE_NULL;
 
+static TEE_Result bkpsram_zeroize_keys(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS]);
+
 // CRC-32 Init Value
 #define Crc32Init 	0xffffffffu
 
@@ -79,38 +81,6 @@ static uint32_t Crc32(const void *pMem, uint32_t uiSize)
 	while(uiSize--)
 		uiCrc = (uiCrc >> 8) ^ Crc32Tbl[(uint8_t)(uiCrc) ^ *(uint8_t *)(pBuf++)];
 	return(uiCrc);
-}
-
-static TEE_Result bkpsram_zeroize_keys(uint32_t pt)
-{
-	const uint32_t exp_pt = TEE_PARAM_TYPES(TEE_PARAM_TYPE_NONE,
-							TEE_PARAM_TYPE_NONE,
-							TEE_PARAM_TYPE_NONE,
-							TEE_PARAM_TYPE_NONE);
-	const uint32_t pta   =  TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
-							TEE_PARAM_TYPE_MEMREF_INPUT,
-							TEE_PARAM_TYPE_NONE,
-							TEE_PARAM_TYPE_NONE);
-
-	TEE_Result res = TEE_SUCCESS;
-	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
-	uint8_t keystore[NUM_KEYS * KEY_SIZE + CRC32_SIZE] = {0};
-	uint32_t crc;
-
-	if (pt != exp_pt)
-		return TEE_ERROR_BAD_PARAMETERS;
-	crc = Crc32(keystore, NUM_KEYS * KEY_SIZE);
-	/* Write BKPSRAM PTA */
-	memcpy(&keystore[NUM_KEYS * KEY_SIZE], &crc, CRC32_SIZE);
-	params_pta[0].value.a = KEY_STORE_OFFSET_A;
-	params_pta[1].memref.buffer = keystore;
-	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
-	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
-	params_pta[0].value.a = KEY_STORE_OFFSET_B;
-	params_pta[1].memref.buffer = keystore;
-	params_pta[1].memref.size = NUM_KEYS * KEY_SIZE + CRC32_SIZE;
-	res = TEE_InvokeTACommand(pta_session,	TEE_TIMEOUT_INFINITE, PTA_BKPSRAM_WRITE, pta, params_pta, NULL);
-	return res;
 }
 
 static bool bkpsram_check_keystore(void)
@@ -184,12 +154,13 @@ static bool bkpsram_check_keystore(void)
 	else 
 	{
 		// a and b are bad
-		/* Zeroize Key BKPSRAM PTA */
-		pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_NONE,
+		/* Zeroize all keys BKPSRAM PTA */
+		pta = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
 			  TEE_PARAM_TYPE_NONE,
 			  TEE_PARAM_TYPE_NONE,
 			  TEE_PARAM_TYPE_NONE);
-		bkpsram_zeroize_keys(pta);
+		params_pta[0].value.a = (1 << NUM_KEYS) - 1;
+		bkpsram_zeroize_keys(pta, params_pta);
 		return true;
 	}
 }
@@ -340,6 +311,41 @@ static TEE_Result bkpsram_writekey(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS]
 	return res;
 }
 
+static TEE_Result bkpsram_zeroize_keys(uint32_t pt, TEE_Param params[TEE_NUM_PARAMS])
+{
+	const uint32_t exp_pt = TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+							TEE_PARAM_TYPE_NONE,
+							TEE_PARAM_TYPE_NONE,
+							TEE_PARAM_TYPE_NONE);
+	const uint32_t pta   =  TEE_PARAM_TYPES(TEE_PARAM_TYPE_VALUE_INPUT,
+							TEE_PARAM_TYPE_MEMREF_INPUT,
+							TEE_PARAM_TYPE_NONE,
+							TEE_PARAM_TYPE_NONE);
+
+	TEE_Result res = TEE_SUCCESS;
+	TEE_Param params_pta[TEE_NUM_PARAMS] = { };
+	uint8_t key_z[KEY_SIZE] = {0};
+	uint32_t mask = params[0].value.a;
+	uint32_t index = 0;
+	
+	if (pt != exp_pt || !mask || mask > (1 << NUM_KEYS) - 1)
+		return TEE_ERROR_BAD_PARAMETERS;
+
+	/* Write zero keyBKPSRAM PTA */
+	params_pta[1].memref.buffer = key_z;
+	params_pta[1].memref.size = KEY_SIZE;
+	while(mask && res == TEE_SUCCESS)
+	{
+		if(mask & 1)
+		{
+			params_pta[0].value.a = index;
+			res = bkpsram_writekey(pta, params_pta);
+		}
+		mask >>= 1;
+		index++;
+	}
+	return res;
+}
 
 TEE_Result TA_CreateEntryPoint(void)
 {
@@ -412,7 +418,7 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sess __unused, uint32_t cmd,
 	case TA_STM32MP_BKPSRAM_WRITEKEY:
 		return bkpsram_writekey(pt, params);
 	case TA_STM32MP_BKPSRAM_ZEROKEYS:
-		return bkpsram_zeroize_keys(pt);
+		return bkpsram_zeroize_keys(pt, params);
 	default:
 		EMSG("Command ID %#"PRIx32" is not supported", cmd);
 		return TEE_ERROR_NOT_SUPPORTED;
