@@ -98,8 +98,6 @@ $(call force,CFG_STM32MP1_SCMI_SIP,n)
 $(call force,CFG_STM32MP13_CLK,y)
 $(call force,CFG_STM32MP15,n)
 $(call force,CFG_TEE_CORE_NB_CORE,1)
-$(call force,CFG_TZSRAM_START,0x2ffe0000)
-$(call force,CFG_TZSRAM_SIZE,0x0001f000)
 $(call force,CFG_WITH_NSEC_GPIOS,n)
 CFG_NUM_THREADS ?= 5
 CFG_STM32MP_OPP_COUNT ?= 2
@@ -113,6 +111,7 @@ $(call force,CFG_DRIVERS_CLK_FIXED,n)
 $(call force,CFG_REGULATOR_DRIVERS,y)
 $(call force,CFG_SCMI_MSG_PERF_DOMAIN,n)
 $(call force,CFG_SECONDARY_INIT_CNTFRQ,y)
+$(call force,CFG_STM32_GPIO,y)
 $(call force,CFG_STM32_PKA,n)
 $(call force,CFG_STM32_SAES,n)
 $(call force,CFG_STM32_HUK,y)
@@ -125,7 +124,7 @@ $(call force,CFG_WITH_NSEC_GPIOS,y)
 CFG_NUM_THREADS ?= 3
 CFG_STM32MP1_CPU_OPP ?= y
 CFG_TEE_CORE_NB_CORE ?= 2
-CFG_WITH_PAGER ?= y
+CFG_WITH_PAGER ?= n
 endif # CFG_STM32MPx
 
 # Trusted User Interface
