@@ -727,7 +727,7 @@ static TEE_Result stm32_configure_tamp(void)
 	return TEE_SUCCESS;
 }
 
-driver_init_late(stm32_configure_tamp);
+service_init(stm32_configure_tamp);
 #endif
 
 #ifdef CFG_STM32_HSE_MONITORING
