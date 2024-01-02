@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
 /*
- * Copyright (C) STMicroelectronics 2022 - All Rights Reserved
+ * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
  * Author: STM32CubeMX code generation for STMicroelectronics.
  */
 
@@ -23,7 +23,7 @@
 
 / {
 	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-5.15-yocto-kirkstone-mp1-v22.06.15";
-	compatible = "st,stm32mp153c-brick-mx", "st,stm32mp153";
+	compatible = "st,stm32mp153c-brick-mx",  "st,stm32mp153c-m7xc-mx", "st,stm32mp153c-t7xc-mx", "st,stm32mp153";
 
 	memory@c0000000 {
 		device_type = "memory";
@@ -64,14 +64,22 @@
 		/* USER CODE BEGIN clocks */
 		/* USER CODE END clocks */
 
+		clk_hsi: clk-hsi {
+			clock-frequency = <64000000>;
+
+			/* USER CODE BEGIN clk_hsi */
+			/* USER CODE END clk_hsi */
+		};
 		clk_lse: clk-lse {
+			clock-frequency = <32768>;
 			st,drive = < LSEDRV_MEDIUM_HIGH >;
 
 			/* USER CODE BEGIN clk_lse */
 			/* USER CODE END clk_lse */
 		};
-
 		clk_hse: clk-hse {
+			clock-frequency = <24000000>;
+			st,digbypass;
 
 			/* USER CODE BEGIN clk_hse */
 			/* USER CODE END clk_hse */
@@ -126,10 +134,6 @@
 	/* USER CODE END bsec */
 };
 
-&clk_hse {
-	st,digbypass;
-};
-
 &cpu0 {
 	cpu-supply = <&vddcore>;
 };
@@ -148,6 +152,7 @@
 	DECPROT(STM32MP1_ETZPC_I2C3_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_I2C4_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_SPI1_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_SPI2_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_SPI5_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_UART4_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_VREFBUF_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
@@ -156,7 +161,7 @@
 	DECPROT(STM32MP1_ETZPC_DDRPHYC_ID, DECPROT_NS_R_S_W, DECPROT_LOCK)
 	/*"Secured" peripherals*/
 	DECPROT(STM32MP1_ETZPC_IWDG1_ID, DECPROT_S_RW, DECPROT_LOCK)
-	DECPROT(STM32MP1_ETZPC_RNG1_ID, DECPROT_S_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_RNG1_ID, DECPROT_S_RW, DECPROT_LOCK)
 	DECPROT(STM32MP1_ETZPC_STGENC_ID, DECPROT_S_RW, DECPROT_LOCK)
 	/*"Mcu Isolation" peripherals*/
 	DECPROT(STM32MP1_ETZPC_DMA2_ID, DECPROT_MCU_ISOLATION, DECPROT_UNLOCK)
@@ -399,7 +404,7 @@
 		CLK_STGEN_HSE
 		CLK_USBPHY_DISABLED
 		CLK_SPI2S1_PLL3Q
-		CLK_SPI2S23_DISABLED
+		CLK_SPI2S23_PLL3Q
 		CLK_SPI45_HSI
 		CLK_SPI6_DISABLED
 		CLK_I2C46_HSI
@@ -445,7 +450,7 @@
 	pll4:st,pll@3 {
 		compatible = "st,stm32mp1-pll";
 		reg = <3>;
-		cfg = < 3 98 5 7 74 PQR(1,0,0) >;
+		cfg = < 3 124 5 7 74 PQR(1,0,0) >;
 	};
 };
 
