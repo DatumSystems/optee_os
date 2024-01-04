@@ -13,7 +13,7 @@ flavor_dts_file-157F_ED1 = stm32mp157f-ed1.dts
 flavor_dts_file-157F_EV1 = stm32mp157f-ev1.dts
 flavor_dts_file-135F_DK = stm32mp135f-dk.dts
 flavor_dts_file-153C_BRICK = stm32mp153c-brick-mx.dts
-flavor_dts_file-153C_T7XC = stm32mp153c-t7xc-mx.dts
+flavor_dts_file-153C_BRICK_NOTAMP = stm32mp153c-brick-notamp-mx.dts
 
 flavorlist-512M = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157C_DK2) \
@@ -21,7 +21,7 @@ flavorlist-512M = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157F_DK2) \
 		  $(flavor_dts_file-135F_DK) \
 		  $(flavor_dts_file-153C_BRICK) \
-		  $(flavor_dts_file-153C_T7XC)
+		  $(flavor_dts_file-153C_BRICK_NOTAMP)
 
 flavorlist-1G = $(flavor_dts_file-157A_ED1) \
 		$(flavor_dts_file-157A_EV1) \
@@ -45,7 +45,7 @@ flavorlist-MP15 = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157F_ED1) \
 		  $(flavor_dts_file-157F_EV1) \
 		  $(flavor_dts_file-153C_BRICK) \
-		  $(flavor_dts_file-153C_T7XC)
+		  $(flavor_dts_file-153C_BRICK_NOTAMP)
 
 flavorlist-MP13 = $(flavor_dts_file-135F_DK)
 
