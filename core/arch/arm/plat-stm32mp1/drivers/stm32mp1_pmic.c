@@ -591,8 +591,11 @@ static void initialize_pmic(const void *fdt, int pmic_node)
 
 	if (stpmic1_get_version(&pmic_version))
 		panic("Failed to access PMIC");
+	EMSG("---------------------------------------------------------------");
+	EMSG("PMIC version = 0x%02lx", pmic_version);
+	stpmic1_dump_registers();
 
-	DMSG("PMIC version = 0x%02lx", pmic_version);
+
 	stpmic1_dump_regulators();
 
 	if (stpmic1_powerctrl_on())
@@ -603,6 +606,7 @@ static void initialize_pmic(const void *fdt, int pmic_node)
 	parse_regulator_fdt_nodes();
 
 	stm32mp_put_pmic();
+
 }
 
 static TEE_Result stm32_pmic_init_it(const void *fdt, int node)

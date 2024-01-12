@@ -1117,6 +1117,21 @@ int stpmic1_register_update(uint8_t register_id, uint8_t value, uint8_t mask)
 	return stpmic1_register_write(register_id, val);
 }
 
+void stpmic1_dump_registers(void)
+{
+	uint8_t val = 0;
+	uint8_t i = 0;
+
+	EMSG("STPMIC1 REGISTER DUMP");
+	for (i = 0; i < 0xff; i++) {
+		if (stpmic1_register_read(i, &val))
+			continue;
+
+		EMSG("Reg 0x%02x: 0x%02x", i, val);
+	}
+
+}
+
 void stpmic1_bind_i2c(struct i2c_handle_s *i2c_handle, uint16_t i2c_addr)
 {
 	pmic_i2c_handle = i2c_handle;

@@ -183,6 +183,7 @@ int stpmic1_get_version(unsigned long *version);
 
 /* Read STPMIC1 device internal registers content */
 void stpmic1_dump_regulators(void);
+void stpmic1_dump_registers(void);
 
 /* Enable power control in STPMIC1 device */
 int stpmic1_powerctrl_on(void);
