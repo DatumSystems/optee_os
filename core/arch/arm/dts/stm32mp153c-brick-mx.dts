@@ -22,7 +22,7 @@
 /* USER CODE END includes */
 
 / {
-	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-5.15-yocto-kirkstone-mp1-v22.06.15";
+	model = "Datum M7XC/T7XC";
 	compatible = "st,stm32mp153c-brick-mx",  "st,stm32mp153c-m7xc-mx", "st,stm32mp153c-t7xc-mx", "st,stm32mp153";
 
 	memory@c0000000 {
@@ -400,12 +400,12 @@
 		CLK_CKPER_HSE
 		CLK_FMC_ACLK
 		CLK_ETH_PLL4P
-		CLK_SDMMC12_PLL4P
+		CLK_SDMMC12_PLL3R
 		CLK_STGEN_HSE
 		CLK_USBPHY_DISABLED
 		CLK_SPI2S1_PLL3Q
-		CLK_SPI2S23_PLL3Q
-		CLK_SPI45_HSI
+		CLK_SPI2S23_PLL3R
+		CLK_SPI45_PLL4Q
 		CLK_SPI6_DISABLED
 		CLK_I2C46_HSI
 		CLK_SDMMC3_DISABLED
@@ -444,13 +444,12 @@
 	pll3:st,pll@2 {
 		compatible = "st,stm32mp1-pll";
 		reg = <2>;
-		cfg = < 1 33 1 16 36 PQR(1,1,0) >;
-		frac = < 0x1a04 >;
+		cfg = < 2 49 1 4 3 PQR(1,1,1) >;
 	};
 	pll4:st,pll@3 {
 		compatible = "st,stm32mp1-pll";
 		reg = <3>;
-		cfg = < 3 124 5 7 74 PQR(1,0,0) >;
+		cfg = < 3 124 5 74 127 PQR(1,1,0) >;
 	};
 };
 
