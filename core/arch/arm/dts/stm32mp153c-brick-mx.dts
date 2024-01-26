@@ -103,12 +103,12 @@
 			slew-rate = <0>;
 		};
 	};
-	tamp_in2_pin_a: tamp_in2_pin_0 {
-		pins {
-			pinmux = <STM32_PINMUX('I', 8, RSVD)>;
-			st,tamp_id = <2>;
-		};
-	};
+	// tamp_in2_pin_a: tamp_in2_pin_0 {
+	// 	pins {
+	// 		pinmux = <STM32_PINMUX('I', 8, RSVD)>;
+	// 		st,tamp_id = <2>;
+	// 	};
+	// };
 	/* USER CODE END pinctrl */
 };
 
@@ -178,7 +178,7 @@
 		/*STM32CubeMX generates a basic and standard configuration for ETZPC.
 		Additional device configurations can be added here if needed.
 		"etzpc" node could be also overloaded in "addons" User-Section.*/
-	DECPROT(STM32MP1_ETZPC_BKPSRAM_ID, DECPROT_S_RW, DECPROT_LOCK)
+	//DECPROT(STM32MP1_ETZPC_BKPSRAM_ID, DECPROT_S_RW, DECPROT_LOCK)
 	/* USER CODE END etzpc_decprot */
 	>;
 
@@ -476,20 +476,20 @@
 	/* USER CODE END uart4 */
 };
 
-&tamp{
-	status = "okay";
+// &tamp{
+// 	status = "okay";
 
-	/* USER CODE BEGIN tamp */
-	st,tamp_passive_precharge = <4>;
-	st,tamp_passive_nb_sample = <4>;
-	st,tamp_passive_sample_clk_div = <16384>;
-	tamp_passive@2 {
-		pinctrl-0 = <&tamp_in2_pin_a>;
-		st,trig_on;
-		status = "okay";
-	};
-	/* USER CODE END tamp */
-};
+// 	/* USER CODE BEGIN tamp */
+// 	st,tamp_passive_precharge = <4>;
+// 	st,tamp_passive_nb_sample = <4>;
+// 	st,tamp_passive_sample_clk_div = <16384>;
+// 	tamp_passive@2 {
+// 		pinctrl-0 = <&tamp_in2_pin_a>;
+// 		st,trig_on;
+// 		status = "okay";
+// 	};
+// 	/* USER CODE END tamp */
+// };
 
 /* USER CODE BEGIN addons */
 /* Low-power states of regulators */

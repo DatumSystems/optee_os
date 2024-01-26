@@ -13,7 +13,7 @@ flavor_dts_file-157F_ED1 = stm32mp157f-ed1.dts
 flavor_dts_file-157F_EV1 = stm32mp157f-ev1.dts
 flavor_dts_file-135F_DK = stm32mp135f-dk.dts
 flavor_dts_file-153C_BRICK = stm32mp153c-brick-mx.dts
-flavor_dts_file-153C_BRICK_NOTAMP = stm32mp153c-brick-notamp-mx.dts
+flavor_dts_file-153C_BRICK_TAMP = stm32mp153c-brick-tamp-mx.dts
 
 flavorlist-512M = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157C_DK2) \
@@ -21,7 +21,7 @@ flavorlist-512M = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157F_DK2) \
 		  $(flavor_dts_file-135F_DK) \
 		  $(flavor_dts_file-153C_BRICK) \
-		  $(flavor_dts_file-153C_BRICK_NOTAMP)
+		  $(flavor_dts_file-153C_BRICK_TAMP)
 
 flavorlist-1G = $(flavor_dts_file-157A_ED1) \
 		$(flavor_dts_file-157A_EV1) \
@@ -45,7 +45,7 @@ flavorlist-MP15 = $(flavor_dts_file-157A_DK1) \
 		  $(flavor_dts_file-157F_ED1) \
 		  $(flavor_dts_file-157F_EV1) \
 		  $(flavor_dts_file-153C_BRICK) \
-		  $(flavor_dts_file-153C_BRICK_NOTAMP)
+		  $(flavor_dts_file-153C_BRICK_TAMP)
 
 flavorlist-MP13 = $(flavor_dts_file-135F_DK)
 
@@ -237,7 +237,7 @@ CFG_STM32_REGULATOR_GPIO ?= y
 CFG_STM32_RNG ?= y
 CFG_STM32_RTC ?= y
 CFG_STM32_SAES ?= y
-# If TAMP enabled, enable BKPREG (part of TAMP) amd BKPSRAM (used by TAM<P)
+# If TAMP enabled, enable BKPREG (part of TAMP) amd BKPSRAM (used by TAMP)
 CFG_STM32_TAMP ?= y
 ifeq ($(CFG_STM32_TAMP),y)
 $(call force,CFG_STM32_BKPREG,y,Mandated by CFG_STM32_TAMP)
