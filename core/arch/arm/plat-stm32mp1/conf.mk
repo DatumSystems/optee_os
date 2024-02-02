@@ -49,6 +49,8 @@ flavorlist-MP15 = $(flavor_dts_file-157A_DK1) \
 
 flavorlist-MP13 = $(flavor_dts_file-135F_DK)
 
+flavorlist-TAMP = $(flavor_dts_file-153C_BRICK_TAMP)
+
 ifneq ($(PLATFORM_FLAVOR),)
 ifeq ($(flavor_dts_file-$(PLATFORM_FLAVOR)),)
 $(error Invalid platform flavor $(PLATFORM_FLAVOR))
@@ -66,6 +68,10 @@ endif
 
 ifeq ($(filter $(CFG_STM32MP15) $(CFG_STM32MP13),y),)
 $(error STM32 Platform must be defined)
+endif
+
+ifeq ($(filter $(CFG_EMBED_DTB_SOURCE_FILE),$(flavorlist-TAMP)),)
+$(call force,CFG_STM32_TAMP,n)
 endif
 
 include core/arch/arm/cpu/cortex-a7.mk
@@ -207,15 +213,6 @@ ifeq ($(CFG_BSEC_PTA),y)
 $(call force,CFG_STM32_BSEC,y,Mandated by CFG_BSEC_PTA)
 endif
 
-# Enable TAMP BKP REG for secure key storage
-CFG_BKPREG_PTA ?= y
-ifeq ($(CFG_BKPREG_PTA),y)
-$(call force,CFG_STM32_TAMP,y,Mandated by CFG_BKPREG_PTA)
-endif
-
-#Enable BKP SRAM for secure key storage
-CFG_BKPSRAM_PTA ?= y
-
 # Remoteproc early TA for coprocessor firmware management
 CFG_RPROC_PTA ?= n
 ifeq ($(CFG_RPROC_PTA),y)
@@ -238,10 +235,12 @@ CFG_STM32_RNG ?= y
 CFG_STM32_RTC ?= y
 CFG_STM32_SAES ?= y
 # If TAMP enabled, enable BKPREG (part of TAMP) amd BKPSRAM (used by TAMP)
-CFG_STM32_TAMP ?= y
+CFG_STM32_TAMP ?= n
 ifeq ($(CFG_STM32_TAMP),y)
 $(call force,CFG_STM32_BKPREG,y,Mandated by CFG_STM32_TAMP)
 $(call force,CFG_STM32_BKPSRAM,y,Mandated by CFG_STM32_TAMP)
+$(call force,CFG_BKPREG_PTA,y,Mandated by CFG_STM32_TAMP)
+$(call force,CFG_BKPSRAM_PTA,y,Mandated by CFG_STM32_TAMP)
 endif
 CFG_STM32_TIM ?= y
 CFG_STM32_UART ?= y
