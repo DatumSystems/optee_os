@@ -2759,27 +2759,32 @@ static int fdt_clk_stm32_parse_pll(const void *fdt, int subnode,
 	int subnode_pll = 0;
 	int subnode_vco = 0;
 	int err = 0;
-
+	DMSG("ftd_parse_pll:fdt_getprop(st,pll) subnode=%d", subnode);
 	cuint = fdt_getprop(fdt, subnode, "st,pll", NULL);
 	if (!cuint)
 		return -FDT_ERR_NOTFOUND;
 
+	DMSG("ftd_parse_pll:fdt_node_offset_by_phandle()");
 	subnode_pll = fdt_node_offset_by_phandle(fdt, fdt32_to_cpu(*cuint));
 	if (subnode_pll < 0)
 		return -FDT_ERR_NOTFOUND;
 
+	DMSG("ftd_parse_pll:fdt_getprop(st,pll_vco)");
 	cuint = fdt_getprop(fdt, subnode_pll, "st,pll_vco", NULL);
 	if (!cuint)
 		return -FDT_ERR_NOTFOUND;
 
+	DMSG("fdt_node_offset_by_phandle:fdt_getprop()");
 	subnode_vco = fdt_node_offset_by_phandle(fdt, fdt32_to_cpu(*cuint));
 	if (subnode_vco < 0)
 		return -FDT_ERR_NOTFOUND;
 
+	DMSG("fdt_node_offset_by_phandle:fdt_clk_stm32_load_vco_config(%d)", subnode_vco);
 	err = fdt_clk_stm32_load_vco_config(fdt, subnode_vco, &pll->vco);
 	if (err != 0)
 		return err;
 
+	DMSG("fdt_node_offset_by_phandle:fdt_clk_stm32_load_output_config(%d)", subnode_vco);
 	err = fdt_clk_stm32_load_output_config(fdt, subnode_pll, &pll->output);
 	if (err != 0)
 		return err;
