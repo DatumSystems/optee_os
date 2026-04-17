@@ -14,14 +14,15 @@ flavor_dts_file-157F_DK2 = stm32mp157f-dk2.dts
 flavor_dts_file-157F_ED1 = stm32mp157f-ed1.dts
 flavor_dts_file-157F_EV1 = stm32mp157f-ev1.dts
 flavor_dts_file-153C_BRICK = stm32mp153c-brick-mx.dts
+flavor_dts_file-157F_OSD1_BRK = stm32mp157f-osd32mp1-brk.dts
 
 flavor_dts_file-135F_DK = stm32mp135f-dk.dts
 
 flavorlist-cryp-512M = $(flavor_dts_file-157C_DK2) \
 		       $(flavor_dts_file-157F_DK2) \
 		       $(flavor_dts_file-135F_DK) \
-		       $(flavor_dts_file-153C_BRICK)
-
+		       $(flavor_dts_file-153C_BRICK) \
+			   $(flavor_dts_file-157F_OSD1_BRK)
 
 flavorlist-no_cryp-512M = $(flavor_dts_file-157A_DK1) \
 			  $(flavor_dts_file-157D_DK1)
@@ -61,7 +62,8 @@ flavorlist-MP15 = $(flavor_dts_file-157A_DHCOR_AVENGER96) \
 		  $(flavor_dts_file-157F_DK2) \
 		  $(flavor_dts_file-157F_ED1) \
 		  $(flavor_dts_file-157F_EV1) \
-		  $(flavor_dts_file-153C_BRICK)
+		  $(flavor_dts_file-153C_BRICK) \
+		  $(flavor_dts_file-157F_OSD1_BRK)
 
 flavorlist-MP13 = $(flavor_dts_file-135F_DK)
 
